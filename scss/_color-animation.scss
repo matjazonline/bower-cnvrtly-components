@@ -1,0 +1,47 @@
+
+.animate-colour:hover{
+  background-color: rgba(127,140,147,0.6);
+}
+.animate-colour{
+  -webkit-animation: color-change 30s infinite;
+  -moz-animation: color-change 30s infinite;
+  -o-animation: color-change 30s infinite;
+  -ms-animation: color-change 30s infinite;
+  animation: color-change 30s infinite;
+}
+
+@-webkit-keyframes color-change {
+  0% { color: #ffffff; }
+  80% { color: #ffffff; }
+  86% { color: #7f8c8d; }
+  90% { color: #16a085; }
+  100% { color: #ffffff; }
+}
+@-moz-keyframes color-change {
+  0% { color: #ffffff; }
+  86% { color: #ffffff; }
+  92% { color: #7f8c8d; }
+  95% { color: #16a085; }
+  100% { color: #ffffff; }
+}
+@-ms-keyframes color-change {
+  0% { color: #ffffff; }
+  86% { color: #ffffff; }
+  92% { color: #7f8c8d; }
+  95% { color: #16a085; }
+  100% { color: #ffffff; }
+}
+@-o-keyframes color-change {
+  0% { color: #ffffff; }
+  86% { color: #ffffff; }
+  92% { color: #7f8c8d; }
+  95% { color: #16a085; }
+  100% { color: #ffffff; }
+}
+@keyframes color-change {
+  0% { color: #ffffff; }
+  86% { color: #ffffff; }
+  92% { color: #7f8c8d; }
+  95% { color: #16a085; }
+  100% { color: #ffffff; }
+}

@@ -1,0 +1,45 @@
+
+.#{$fa-css-prefix}-4x {
+  font-size: 4em;
+}
+.single-border.#{$fa-css-prefix}-4x {
+  padding: .4em;
+  border: solid 0.02em #000;
+  border-radius: 50%;
+  display: block;
+  width: 120px;
+  height: 120px;
+  text-align: center;
+
+}
+$shadow-color:#bdc3c7;
+.double-border.#{$fa-css-prefix}-4x {
+  padding: .4em;
+  border: solid 0.06em #fff;
+  border-radius: 50%;
+  display: block;
+  width: 120px;
+  height: 120px;
+  text-align: center;
+  position: relative;
+  background-color:$body-bg;
+  @include box-shadow(
+      $shadow-color 1px 1px 0px,
+      $shadow-color 2px 2px 0px,
+      $shadow-color 3px 3px 0px,
+      $shadow-color 4px 4px 0px,
+      $shadow-color 5px 5px 0px,
+      $shadow-color 6px 6px 0px
+  );
+}
+
+.double-border.#{$fa-css-prefix}-4x:after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
+  border: solid 0.02em #fff;
+  border-radius: 50%;
+}

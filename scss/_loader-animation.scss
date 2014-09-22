@@ -1,0 +1,100 @@
+
+$loader-color-1:#1abc9c;
+$loader-color-2:#ecf0f1;
+$loader-color-3:#7f8c8d;
+$loader-color-4:#2980b9;
+.spinftw {
+  border-radius:100%;
+  display:inline-block;
+  height:30px;
+  width:30px;
+  -webkit-animation:loader infinite 4s;
+  -moz-animation:loader infinite 4s;
+  animation:loader infinite 4s;
+  box-shadow:25px 25px $loader-color-1,
+  -25px 25px $loader-color-2,
+  -25px -25px $loader-color-3,
+  25px -25px $loader-color-4;
+}
+
+
+@-webkit-keyframes loader {
+  0%,100% {
+    box-shadow:25px 25px $loader-color-1,
+    -25px 25px $loader-color-2,
+    -25px -25px $loader-color-3,
+    25px -25px $loader-color-4;
+  }
+  25% {
+    box-shadow:-25px 25px $loader-color-1,
+    -25px -25px $loader-color-2,
+    25px -25px $loader-color-3,
+    25px 25px $loader-color-4;
+  }
+  50% {
+    box-shadow:-25px -25px $loader-color-1,
+    25px -25px $loader-color-2,
+    25px 25px $loader-color-3,
+    -25px 25px $loader-color-4;
+  }
+  75% {
+    box-shadow:25px -25px $loader-color-1,
+    25px 25px $loader-color-2,
+    -25px 25px $loader-color-3,
+    -25px -25px $loader-color-4;
+  }
+}
+
+@-moz-keyframes loader {
+  0%,100% {
+    box-shadow:25px 25px $loader-color-1,
+    -25px 25px $loader-color-2,
+    -25px -25px $loader-color-3,
+    25px -25px $loader-color-4;
+  }
+  25% {
+    box-shadow:-25px 25px $loader-color-1,
+    -25px -25px $loader-color-2,
+    25px -25px $loader-color-3,
+    25px 25px $loader-color-4;
+  }
+  50% {
+    box-shadow:-25px -25px $loader-color-1,
+    25px -25px $loader-color-2,
+    25px 25px $loader-color-3,
+    -25px 25px $loader-color-4;
+  }
+  75% {
+    box-shadow:25px -25px $loader-color-1,
+    25px 25px $loader-color-2,
+    -25px 25px $loader-color-3,
+    -25px -25px $loader-color-4;
+  }
+}
+
+@keyframes loader {
+  0%,100% {
+    box-shadow:25px 25px $loader-color-1,
+    -25px 25px $loader-color-2,
+    -25px -25px $loader-color-3,
+    25px -25px $loader-color-4;
+  }
+  25% {
+    box-shadow:-25px 25px $loader-color-1,
+    -25px -25px $loader-color-2,
+    25px -25px $loader-color-3,
+    25px 25px $loader-color-4;
+  }
+  50% {
+    box-shadow:-25px -25px $loader-color-1,
+    25px -25px $loader-color-2,
+    25px 25px $loader-color-3,
+    -25px 25px $loader-color-4;
+  }
+  75% {
+    box-shadow:25px -25px $loader-color-1,
+    25px 25px $loader-color-2,
+    -25px 25px $loader-color-3,
+    -25px -25px $loader-color-4;
+  }
+}

@@ -1,0 +1,31 @@
+.cnv-two-column-w {
+  @include grid-row;
+  .cnv-left-column,.cnv-right-column {
+    @include grid-column($columns:false);
+
+  }
+}
+  @media only screen {
+    //this is small screen
+    .cnv-two-column-w {
+      .cnv-left-column {
+        @include grid-column($columns: 12, $collapse: null, $float: false);
+      }
+      .cnv-right-column {
+        @include grid-column($columns: 12, $collapse: null, $float: false);
+      }
+    }
+  }
+
+
+  @media #{$small} {
+    //this is large screen
+    .cnv-two-column-w {
+      .cnv-left-column {
+        @include grid-column($columns: 8, $collapse: null, $float: false);
+      }
+      .cnv-right-column {
+        @include grid-column($columns: 4, $collapse: null, $float: false);
+      }
+    }
+  }

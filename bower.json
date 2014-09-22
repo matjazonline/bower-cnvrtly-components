@@ -1,0 +1,17 @@
+{
+  "name": "magnet-pages-app-tools",
+  "version": "0.0.11",
+  "authors": [
+    "m-a-t-t <matjazonline@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ]
+}
