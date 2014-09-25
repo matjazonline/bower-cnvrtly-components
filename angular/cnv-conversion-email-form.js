@@ -4,14 +4,20 @@ angular.module('cnvrtlyComponents')
     .directive('cnvConversionEmailForm', ['$http','$rootScope','CnvrtlyComponents', function ($http,$rootScope,CnvrtlyComponents) {
         return {
             //scope:false,
+            require:'form',
             restrict: 'A',
-            link: function postLink(scope, element, attrs) {
+            template:'',
+            link: function postLink(scope, element, attrs,formCtrl) {
+                scope.form=formCtrl
+                scope.submitCalled=false
                 element=$(element)
                 var newElementAdded=false
                 var emailField=element.find('input[name="email"]')
+
+
                 if(emailField==null||emailField.length<1)emailField=element.find(".email")
                 if(emailField.length<1){
-                    emailField=$('<input type="text" class="email" value=""/>')
+                    emailField=$('<input type="email" class="email" value=""/>')
                     element.prepend(emailField)
                     newElementAdded=true
                 }
@@ -49,10 +55,14 @@ angular.module('cnvrtlyComponents')
                     //console.log("postURL=",postURL)
                     return postURL
                 }
-                var submitForm=function(){
+                scope.submitForm=function(){
                     var emailAddr=emailField.val()
-
-
+                    if(!scope.form.$valid){
+                        scope.$apply( function(){
+                            scope.submitCalled=true
+                        })
+                        return
+                    }
                     $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:progress")
                     var params = {email: emailAddr,dataArr:[]};
 
@@ -122,13 +132,13 @@ angular.module('cnvrtlyComponents')
                 $("input", formEl).keypress(function(event) {
                     if (event.which == 13) {
                         event.preventDefault();
-                        submitForm();
+                        scope.submitForm();
                     }
                 });
-                formEl.submit(submitForm)
-                submitBtn.click(submitForm)
+                formEl.submit(scope.submitForm)
+                submitBtn.click(scope.submitForm)
 
-                scope.$on("event:directive:cnvConversionEmailForm:submit",submitForm)
+                scope.$on("event:directive:cnvConversionEmailForm:submit",scope.submitForm)
             }
         };
     }]);

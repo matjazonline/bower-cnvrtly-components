@@ -39,11 +39,14 @@ angular.module('cnvrtlyComponents')
                         FB.api('/me', {fields: ['email', 'name']}, function(details) {
                             if(details.email!=null && details.email.length>0) {
                                 scope.emailField.val(details.email)
+                                scope.emailField.change()
                                 if(element.find('input, textarea, select').length==1) {
                                     if(details.id&&details.id.length>0&& element.find('input[name="_fbid"]').length==0)$("<input type='hidden' name='_fbid'/>").insertAfter(scope.emailField).val(details.id)
-                                    scope.$broadcast('event:directive:cnvConversionEmailForm:submit')
+                                     scope.$broadcast('event:directive:cnvConversionEmailForm:submit')
+
                                 }else{
                                     if(details.id&&details.id.length>0 && element.find('input[name="_fbid"]').length==0)$("<input type='hidden' name='_fbid'/>").insertAfter(scope.emailField).val(details.id)
+                                    //scope.$apply()
                                 }
                             }
                         })
