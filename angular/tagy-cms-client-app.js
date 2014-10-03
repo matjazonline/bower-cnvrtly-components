@@ -16,13 +16,13 @@
 
             if (this.loadCount == this.totalRequired && typeof this.callback == 'function') this.callback.call();
         },
-        writeScript: function (src) {
+        writeScript: function (src, async) {
             var self = this;
             var s = document.createElement('script');
             s.type = "text/javascript";
-            s.async = true;
+            s.async = async==null ?true:async;
             s.src = src;
-            s.addEventListener('load', function (e) { self.loaded(e); }, false);
+            if(s.async)s.addEventListener('load', function (e) { self.loaded(e); }, false);
             var head = document.getElementsByTagName('head')[0];
             head.appendChild(s);
         }
@@ -40,12 +40,32 @@
          return $ngAppElem.hasClass("tagy-cms-edit-mode")*/
     }
 
+    var detectIE= function() {
+        var ua = window.navigator.userAgent;
+        var msie = ua.indexOf('MSIE ');
+        var trident = ua.indexOf('Trident/');
+
+        if (msie > 0) {
+            // IE 10 or older => return version number
+            return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+        }
+
+        if (trident > 0) {
+            // IE 11 (or newer) => return version number
+            var rv = ua.indexOf('rv:');
+            return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+        }
+
+        // other browser
+        return false;
+    }
+
     var loadScripts=function(loadAsync){
         if(loadAsync==null)loadAsync=true
         if(loadAsync){
             var l=new Loader();
-            l.require(['//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'
-                ,'//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js'
+            l.require(['//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'
+                ,'//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js'
             ],function(){
                 //console.log("JQ&NG LOADED INITING APP path="+window._cnv_init_script_path)
                 initApp(angular)
@@ -63,8 +83,12 @@
             })
         }else{
             console.log("SYNCCCCLOAD")
+
+            var ieVer=detectIE()
+            if(ieVer!=false && ieVer<10 && window._cnv_ie_message)alert(window._cnv_ie_message)
             var xhrObj = new XMLHttpRequest();
-            xhrObj.open('GET', "//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js", false);
+            if(ieVer!=false && ieVer<10)xhrObj=new XDomainRequest()
+            xhrObj.open('GET', "//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js", false);
             xhrObj.send('');
             var se = document.createElement('script');
             se.type = "text/javascript";
@@ -72,16 +96,18 @@
             document.getElementsByTagName('head')[0].appendChild(se);
 
             var xhrObj1 = new XMLHttpRequest();
-            xhrObj1.open('GET', "//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js", false);
+            if(ieVer!=false && ieVer<10)xhrObj1=new XDomainRequest()
+            xhrObj1.open('GET', "//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js", false);
             xhrObj1.send('');
             var se1 = document.createElement('script');
             se1.type = "text/javascript";
             se1.text = xhrObj1.responseText;
             document.getElementsByTagName('head')[0].appendChild(se1);
 
-            initApp(angular)
+            //initApp(angular)
 
             var xhrObj3 = new XMLHttpRequest();
+            if(ieVer!=false && ieVer<10)xhrObj3=new XDomainRequest()
             xhrObj3.open('GET', window._cnv_init_script_path, false);
             xhrObj3.send('');
             var se3 = document.createElement('script');
@@ -89,15 +115,15 @@
             se3.text = xhrObj3.responseText;
             document.getElementsByTagName('head')[0].appendChild(se3);
 
+            initApp(angular)
+
             $(document).ready(function(){
-                console.log("cnv-hide-before-init EXECUTED DOC",$('.cnv-hide-before-init').length)
                 $('.cnv-hide-before-init').removeClass("cnv-hide-before-init")
                 $(document).foundation()
             })
         }
     }
     var initApp=function(angular){
-        //console.log("initAPPPPP",angular)
         angular.module('tagyCmsClientApp',['cnvrtlyComponents'])
     }
 
