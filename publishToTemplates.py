@@ -33,21 +33,27 @@ if templatesDirExists:
 		if dir.startswith(".")==False and os.path.isdir(dir) and os.path.isfile("./"+dir+"/bower.json") and os.path.isfile("./"+dir+"/"+compBowerRel):
 			print("template DIR="+dir)
 			os.chdir(dir)
+			if not os.path.isfile("./.bowerrc"):
+				newF=file(".bowerrc", "w")
+				newF.write('{"directory": "app/bower_components"}')
+				newF.close()
+			#print("FF"+os.path.abspath('./'+compBowerRel))
 			json_data=open('./'+compBowerRel)
 			data = json.load(json_data)
-			print("v2="+data["version"]+" v1="+originalVersion)
+			#print("v2="+data["version"]+" v1="+originalVersion)
+			json_data.close()
+			#break
 			if data["version"]==originalVersion:
-				json_data.close()
+				#json_data.close()
 				print("same version found")
 				continue
 
-			json_data.close()
 			#call(["bower", "uninstall","magnet-pages-app-tools", "--save"])
 			
-			call(["bower", "update" , componentsLocalAbs, "--save"])
+			call(["bower", "install" , componentsLocalAbs, "--save"])
 			
 		#	print(componentsLocalAbs)
-			break
+			#break
 			#print glob.glob("./bower.json")
 			#for file in glob.glob("*.bower"):
 			#	print(file)
