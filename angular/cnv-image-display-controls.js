@@ -17,6 +17,8 @@ angular.module('cnvrtlyComponents')
                     return function (scope, element, attrs, controller, transclude) {
                         if(attrs.cnvAnimationTime==null||attrs.cnvAnimationTime.length<3)attrs.cnvAnimationTime="1000"
                         attrs.cnvAnimationTime=parseInt(attrs.cnvAnimationTime)
+                        if(attrs.cnvScrollTop==null||attrs.cnvScrollTop.length<1)attrs.cnvScrollTop="0"
+                        attrs.cnvScrollTop=parseInt(attrs.cnvScrollTop)
                         scope.imgLoading=false
                         var loadingTmt=null
                           $(element).css({width: '100%',textAlign: 'center', overflow: 'hidden',height:'0px',position:"relative"});
@@ -43,7 +45,7 @@ angular.module('cnvrtlyComponents')
                             if(attrs.cnvScrollTo!=null){
                                 $timeout(function(){
                                     $('html, body').animate({
-                                        scrollTop: element.offset().top
+                                        scrollTop: element.offset().top-attrs.cnvScrollTop
                                     },500);
                                 },0)
 
