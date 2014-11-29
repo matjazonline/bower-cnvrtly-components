@@ -1,0 +1,22 @@
+.cnv-vertical-align-wrap:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  margin-right: -0.25em;
+  /* Adjusts for spacing */
+}
+
+/* line 9, ../bower_components/cnvrtly-components/scss/_cnv-vertical-align.scss */
+.cnv-vertical-align-center {
+  display: inline-block;
+  vertical-align: middle;
+  width: 100%;
+}
+
+/* line 14, ../bower_components/cnvrtly-components/scss/_cnv-vertical-align.scss */
+.cnv-vertical-align-bottom {
+  display: inline-block;
+  vertical-align: bottom;
+  width: 100%;
+}
