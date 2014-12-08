@@ -2,12 +2,33 @@
 
 angular.module('cnvrtlyComponents')
   .directive('cnvImageSelect',[
-        '$rootScope',
-        function ($rootScope) {
+        '$rootScope','$timeout',
+        function ($rootScope,$timeout) {
             return {
                 restrict: 'A',
                 //require:'^cnvSimpleGallery',
+                controller:['$scope','$rootScope',function($scope, $rootScope){
+                    var cont=this
+
+                    this.setLastSelected=function(topPosition){
+                        if($rootScope._cnvImageSelect_lastSelectedTop==null)$rootScope._cnvImageSelect_lastSelectedTop=parseInt(topPosition)
+                    }
+                    this.scrollToLastSelected=function(){
+                        if($rootScope._cnvImageSelect_lastSelectedTop!=null){
+                            var lst=$rootScope._cnvImageSelect_lastSelectedTop
+                            $timeout(function(){
+                                $('html, body').stop().animate({
+                                    scrollTop: lst
+                                },1000,'linear');
+                            },1000)
+                            $rootScope._cnvImageSelect_lastSelectedTop=null
+                        }
+                    }
+
+
+                }],
                 link: function (scope, element, attrs,controller) {
+
                     var elements,currInd
 
                     function dispatchSelect(elem,ind) {
@@ -16,6 +37,7 @@ angular.module('cnvrtlyComponents')
                             src = $(elem).attr("href");
                         }
                         currInd=ind
+
                         $rootScope.$broadcast("cnv-image-selector:event:select", attrs.cnvImageSelect, src)
                     }
 
@@ -23,7 +45,7 @@ angular.module('cnvrtlyComponents')
                         $(elem).click(function(ev){
                             ev.preventDefault()
                             ev.stopPropagation()
-
+                            controller.setLastSelected(elem.offset().top)
                             $rootScope.$apply(function(){
                                 dispatchSelect(elem,ind);
                             })
@@ -48,9 +70,13 @@ angular.module('cnvrtlyComponents')
                                 if(indSel>elements.length-1)indSel=0
                                 if(indSel<0)indSel=elements.length-1
                             }
-                            dispatchSelect($(elements[ indSel]),indSel)
+                            var elem = $(elements[ indSel]);
+                            dispatchSelect(elem,indSel)
                         })
                     }
+                    scope.$on('cnv-image-display:event:hide:'+attrs.cnvImageSelect,function(ev){
+                        if(attrs.cnvAutoScroll)controller.scrollToLastSelected()
+                    })
                 }
             };
         }

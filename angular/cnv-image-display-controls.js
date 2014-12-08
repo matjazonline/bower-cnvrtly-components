@@ -44,8 +44,10 @@ angular.module('cnvrtlyComponents')
                             element.stop().animate({height: h+"px", opacity: "100"},attrs.cnvAnimationTime);
                             if(attrs.cnvScrollTo!=null){
                                 $timeout(function(){
+                                    var sTop = element.offset().top - attrs.cnvScrollTop;
+                                    console.log("scrollTOP=",sTop, element.offset().top , attrs.cnvScrollTop)
                                     $('html, body').animate({
-                                        scrollTop: element.offset().top-attrs.cnvScrollTop
+                                        scrollTop: sTop
                                     },500);
                                 },0)
 
