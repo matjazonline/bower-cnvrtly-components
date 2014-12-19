@@ -1,5 +1,5 @@
 'use strict';
-(function(document) {
+(function(document,window) {
     var Loader = function () { }
     Loader.prototype = {
         require: function (scripts, callback) {
@@ -30,8 +30,10 @@
     var isTaglyCmsEditMode=function(){
         var ngAppElem = document.querySelectorAll('[ng-app]');
         if(ngAppElem.length>1)alert("Multiple ng-app definitions in html!")
-        if(ngAppElem!=null && ngAppElem[0]!=null && ngAppElem[0].classList != null && ngAppElem[0].classList.contains!=null) {
-            return ngAppElem[0].classList.contains("tagy-cms-edit-mode")
+        var htmlElem=document.querySelector("html")
+        if(htmlElem!=null && htmlElem!=null && htmlElem.classList != null && htmlElem.classList.contains!=null) {
+        //if(ngAppElem!=null && ngAppElem[0]!=null && ngAppElem[0].classList != null && ngAppElem[0].classList.contains!=null) {
+            return htmlElem.classList.contains("tagy-cms-edit-mode")
         }else{
             return false
         }
@@ -60,85 +62,111 @@
         return false;
     }
 
-    var loadScripts=function(loadAsync){
+    var loadScripts=function(loadAsync,skipJQ,skipNG){
         if(loadAsync==null)loadAsync=true
+
+
         if(loadAsync){
+            console.log("loading Asynchronous")
             var l=new Loader();
             l.require(['//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'
                 ,'//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js'
             ],function(){
                 //console.log("JQ&NG LOADED INITING APP path="+window._cnv_init_script_path)
-                initApp(angular)
+                //initApp(angular)
+                initApp()
                 //console.log("APP INITED LOADING COMPONENTS path="+window._cnv_init_script_path)
                 if(window._cnv_init_script_path){
                     var l1=new Loader();
                     l1.require([window._cnv_init_script_path],function(){
                         console.log("APP COMPLETE LOADING COMPONENTS")
                         //l1.require(['/files/_templates_landing-pages_landing-event-cta-email_script'],function(){
-                        $(document).foundation()
+                        if($(document).foundation)$(document).foundation()
                         $('.cnv-hide-before-init').removeClass("cnv-hide-before-init")
                     })}else{
                     console.log("window._cnv_init_script_path not defined")
                 }
             })
         }else{
-            console.log("SYNCCCCLOAD")
+            console.log("loading synchronous")
 
             var ieVer=detectIE()
-            if(ieVer!=false && ieVer<10 && window._cnv_ie_message)alert(window._cnv_ie_message)
-            var xhrObj = new XMLHttpRequest();
-            if(ieVer!=false && ieVer<10)xhrObj=new XDomainRequest()
-            xhrObj.open('GET', "//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js", false);
-            xhrObj.send('');
-            var se = document.createElement('script');
-            se.type = "text/javascript";
-            se.text = xhrObj.responseText;
-            document.getElementsByTagName('head')[0].appendChild(se);
 
-            var xhrObj1 = new XMLHttpRequest();
-            if(ieVer!=false && ieVer<10)xhrObj1=new XDomainRequest()
-            xhrObj1.open('GET', "//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js", false);
-            xhrObj1.send('');
-            var se1 = document.createElement('script');
-            se1.type = "text/javascript";
-            se1.text = xhrObj1.responseText;
-            document.getElementsByTagName('head')[0].appendChild(se1);
+            var loadScript=function(ieVer,url) {
+                if (ieVer != false && ieVer < 10 && window._cnv_ie_message)alert(window._cnv_ie_message)
+                var xhrObj = new XMLHttpRequest();
+                if (ieVer != false && ieVer < 10)xhrObj = new XDomainRequest()
+                xhrObj.open('GET', url, false);
+                xhrObj.send('');
+                var se = document.createElement('script');
+                se.type = "text/javascript";
+                se.text = xhrObj.responseText;
+                document.getElementsByTagName('head')[0].appendChild(se);
+                return se
+            }
+            if(!skipJQ) {
+                loadScript(ieVer,"//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js");
+            }
+             if(!skipNG){
+                 loadScript(ieVer,"//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js");
+        }
 
-            //initApp(angular)
 
-            var xhrObj3 = new XMLHttpRequest();
-            if(ieVer!=false && ieVer<10)xhrObj3=new XDomainRequest()
-            xhrObj3.open('GET', window._cnv_init_script_path, false);
-            xhrObj3.send('');
-            var se3 = document.createElement('script');
-            se3.type = "text/javascript";
-            se3.text = xhrObj3.responseText;
-            document.getElementsByTagName('head')[0].appendChild(se3);
+            var se3 = null
 
-            initApp(angular)
+            if(!isTaglyCmsEditMode()){
+                se3=loadScript(ieVer,window._cnv_init_script_path)
+                //TODO xhrObj3.onload=initApp ??? - should it wait untill loaded
+                initApp()
+            }else{
+                se3=document.createElement('script');
+                se3.type = "text/javascript";
+                se3.src=window._cnv_init_script_path
+                se3.onload=initApp
+                document.getElementsByTagName('head')[0].appendChild(se3);
+            }
+        }
+    }
 
+
+    var initApp=function(){
+        if(!isTaglyCmsEditMode()){
+            if($("html").attr("ng-app")==null) {
+                angular.element(document).ready(function() {
+                    angular.bootstrap(document, ['cnvrtlyComponents']);
+                })
+            }else{
+                angular.module('tagyCmsClientApp',['cnvrtlyComponents'])
+            }
+        }else{
+            if($("html").attr("ng-app")==null) {
+                angular.element(document).ready(function() {
+                    angular.bootstrap(document, ['tagyCmsClientApp','cnvrtlyComponents']);
+                })
+            }else{
+                console.log("INFO - App already inited - has ng-app attribute in HTML so component directives are not added")
+            }
+        }
+        if($){
             $(document).ready(function(){
                 $('.cnv-hide-before-init').removeClass("cnv-hide-before-init")
-                $(document).foundation()
+                if( $(document).foundation!=null){$(document).foundation()}
             })
         }
     }
-    var initApp=function(angular){
-        angular.module('tagyCmsClientApp',['cnvrtlyComponents'])
-    }
+
 
     var isDevMode=function(){
         return window._isDevEnvironment==true
-        /*var htmlElem = document.querySelectorAll('html');
-         return htmlElem[0].classList.contains("development")*/
     }
     console.log("TEMPLATE INIT START app.js isDev=",isDevMode())
     if(!isTaglyCmsEditMode() && !isDevMode()){
-        //console.log("TEMPLATE APP LOAD START",window._cnv_init_async)
         loadScripts(window._cnv_init_async)
-        console.log("TEMPLATE APP INITEDDD")
+        console.log("TEMPLATE APP INITEDDD isEdit=",isTaglyCmsEditMode())
     }else if(isDevMode()){
         console.log("DEV MODE TEMPLATE")
         initApp(angular)
+    }else if(isTaglyCmsEditMode()){
+        loadScripts(false,true,true)
     }
-}(document));
+}(document,window));

@@ -118,8 +118,9 @@ angular.module('cnvrtlyComponents')
                     $http.post(getPostURL(), params).success(function(res){
                         if(res.success==true) {
                             if(res.url==null || res.url.length<1){
-                                $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:success")
+                                $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:success",null)
                             }else{
+                                $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:success",res.url)
                                 window.location.href=res.url
                             }
                         }else{
