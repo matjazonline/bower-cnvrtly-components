@@ -131,19 +131,38 @@ angular.module('cnvrtlyComponents')
                             addValueToParams(key, elemValue,keyNames,params.dataArr);
                         }
                     }
+                    if(CnvXData && params.email!=null&& params.email.length>0){
+                        CnvXData.setIdent(params.email)
+                    }
                     $http.post(getPostURL(), params).success(function(res){
-                        if(res.success==true) {
-                            if(res.url==null || res.url.length<1){
-                                $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:success",null)
+
+                        var confirm=function(){
+                            if(res.success==true) {
+                                if(res.url==null || res.url.length<1){
+                                    $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:success",null)
+                                }else{
+                                    $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:success",res.url)
+                                    window.location.href=res.url
+                                }
                             }else{
-                                $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:success",res.url)
-                                window.location.href=res.url
+                                $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:error")
                             }
+                        }
+                        if(CnvXData && params.email!=null&& params.email.length>0){
+                            CnvXData.setIdent(params.email,confirm)
                         }else{
+                            confirm()
+                        }
+
+                    }).error(function(){
+                        var errConfirm=function(){
                             $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:error")
                         }
-                    }).error(function(){
-                        $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:error")
+                        if(CnvXData && params.email!=null&& params.email.length>0){
+                            CnvXData.setIdent(params.email,errConfirm)
+                        }else{
+                            errConfirm()
+                        }
                     })
                 }
                 $("input", formEl).keypress(function(event) {
