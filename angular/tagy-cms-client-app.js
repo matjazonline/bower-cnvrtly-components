@@ -79,7 +79,7 @@
                 if(window._cnv_init_script_path){
                     var l1=new Loader();
                     l1.require([window._cnv_init_script_path],function(){
-                        console.log("APP COMPLETE LOADING COMPONENTS")
+                        //console.log("APP COMPLETE LOADING COMPONENTS")
                         //l1.require(['/files/_templates_landing-pages_landing-event-cta-email_script'],function(){
                         if($(document).foundation)$(document).foundation()
                         $('.cnv-hide-before-init').removeClass("cnv-hide-before-init")
@@ -88,7 +88,7 @@
                 }
             })
         }else{
-            console.log("loading synchronous")
+            //console.log("loading synchronous")
 
             var ieVer=detectIE()
 
@@ -159,10 +159,10 @@
     var isDevMode=function(){
         return window._isDevEnvironment==true
     }
-    console.log("TEMPLATE INIT START app.js isDev=",isDevMode())
+    //console.log("TEMPLATE INIT START app.js isDev=",isDevMode())
     if(!isTaglyCmsEditMode() && !isDevMode()){
         loadScripts(window._cnv_init_async)
-        console.log("TEMPLATE APP INITEDDD isEdit=",isTaglyCmsEditMode())
+        //console.log("TEMPLATE APP INITEDDD isEdit=",isTaglyCmsEditMode())
     }else if(isDevMode()){
         console.log("DEV MODE TEMPLATE")
         initApp(angular)

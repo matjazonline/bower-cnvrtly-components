@@ -13,6 +13,7 @@ angular.module('cnvrtlyComponents')
                 element=$(element)
                 var newElementAdded=false
                 var emailField=element.find('input[name="email"]')
+                var fnlSteps=[]
 
 
                 if(emailField==null||emailField.length<1)emailField=element.find(".email")
@@ -55,6 +56,21 @@ angular.module('cnvrtlyComponents')
                     //console.log("postURL=",postURL)
                     return postURL
                 }
+                var addToFnlSteps=function(fnlStepsParam){
+                    for (var i = 0; i < fnlStepsParam.length; i++) {
+                        var fStep = fnlStepsParam[i];
+                        if(fnlSteps.indexOf(fStep)<0)fnlSteps.push(fStep)
+                    }
+                    updateFormFnlSteps()
+                }
+                var updateFormFnlSteps=function(){
+                    element.find('[name="_fnlSteps"]').remove()
+                    element.prepend('<input type="hidden" name="_fnlSteps" value="'+fnlSteps.toString()+'"/>')
+
+                }
+                scope.$on("event:directive:emailListIntegrationForm:fnlSteps",function(ev,fnlStepsParam){
+                    addToFnlSteps(fnlStepsParam)
+                })
                 scope.submitForm=function(){
                     var emailAddr=emailField.val()
                     if(!scope.form.$valid){
