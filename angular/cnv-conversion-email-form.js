@@ -8,6 +8,8 @@ angular.module('cnvrtlyComponents')
             restrict: 'A',
             template:'',
             link: function postLink(scope, element, attrs,formCtrl) {
+                var CnvXData=window["CnvXData"]
+
                 scope.form=formCtrl
                 scope.submitCalled=false
                 element=$(element)
@@ -23,6 +25,14 @@ angular.module('cnvrtlyComponents')
                     newElementAdded=true
                 }
                 if(emailField)scope.emailField=emailField
+
+                if(CnvXData){
+                    CnvXData.getIdentity(function(identVal){
+                        if(scope.emailField!=null && scope.emailField.val()!=null&& scope.emailField.val().length<1){
+                            scope.emailField.val(identVal).change()
+                        }
+                    })
+                }
 
                 var submitBtn=element.find(".submit")
                 if(submitBtn.length<1)submitBtn=element.find("a.submit")
@@ -132,7 +142,7 @@ angular.module('cnvrtlyComponents')
                         }
                     }
                     if(CnvXData && params.email!=null&& params.email.length>0){
-                        CnvXData.setIdent(params.email)
+                        CnvXData.setIdentity(params.email,function(){})
                     }
                     $http.post(getPostURL(), params).success(function(res){
 
@@ -149,7 +159,7 @@ angular.module('cnvrtlyComponents')
                             }
                         }
                         if(CnvXData && params.email!=null&& params.email.length>0){
-                            CnvXData.setIdent(params.email,confirm)
+                            CnvXData.setIdentity(params.email,confirm)
                         }else{
                             confirm()
                         }
@@ -159,7 +169,7 @@ angular.module('cnvrtlyComponents')
                             $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:error")
                         }
                         if(CnvXData && params.email!=null&& params.email.length>0){
-                            CnvXData.setIdent(params.email,errConfirm)
+                            CnvXData.setIdentity(params.email,errConfirm)
                         }else{
                             errConfirm()
                         }
