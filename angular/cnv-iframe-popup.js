@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('cnvrtlyComponents')
-  .directive('cnvPopup',['$rootScope', function ($rootScope) {
+    .directive('cnvIframePopup',['$rootScope', function ($rootScope) {
 
         //console.log("iframe popup init")
-        window.parent.postMessage({id:'cnvPopup',event:'init'}, '*');
+        window.parent.postMessage({id:'cnvIframePopup',event:'init'}, '*');
         return {
             //template: '<div></div>',
             restrict: 'A',
@@ -13,24 +13,29 @@ angular.module('cnvrtlyComponents')
 
                 return function postLink(scope, element, attrs) {
 
-                    var closeIframePopup=function(redirectUrl){
-                        window.parent.postMessage({id:'cnvPopup',event:'close',url:redirectUrl}, '*');
+                    var closeIframePopup=function(){
+                        window.parent.postMessage({id:'cnvIframePopup',event:'close'}, '*');
                     }
-                    var successIframePopup=function(redirectUrl){
-                        window.parent.postMessage({id:'cnvPopup',event:'success',url:redirectUrl}, '*');
+                    var successIframePopup=function(redirectUrl,email){
+                        window.parent.postMessage({id:'cnvIframePopup',event:'success',url:redirectUrl,email:email}, '*');
                     }
                     $('[cnv-close]',element).click(function(ev){
                         ev.preventDefault()
-                        closeIframePopup()
+                        if(window !== top){
+                            closeIframePopup()
+                        }else{
+                            window.history.back()
+                        }
                     })
 
 
                     var onIframePopupParent=function(data){
-                        if(data.id!=null && data.id=="cnvPopup") {
+                        if(data.id!=null && data.id=="cnvIframePopup") {
                             switch (data.event) {
                                 case "updateView":
                                     if(data.scroll)element.animate({top:data.scroll})
                                     if(data.height)$(document).height(data.height)
+                                    $rootScope.$broadcast("event:directive:cnvFbSubscribeForm:init")
                                     break;
                                 case "fnlSteps":
                                     if(data.fnlSteps&&data.fnlSteps.length>0){
@@ -50,8 +55,8 @@ angular.module('cnvrtlyComponents')
                         //run function//
                         onIframePopupParent(data)
                     },false);
-                    $rootScope.$on("event:directive:emailListIntegrationForm:subscribe:success",function(ev,redirectUrl){
-                        successIframePopup(redirectUrl)
+                    $rootScope.$on("event:directive:emailListIntegrationForm:subscribe:success",function(ev,redirectUrl,email){
+                        successIframePopup(redirectUrl,email)
                     })
                 }
 

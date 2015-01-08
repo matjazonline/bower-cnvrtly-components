@@ -60,6 +60,7 @@ angular.module('cnvrtlyComponents')
                             if ((fbAppId == null || fbAppId.length < 1 ) && window.fbAppId != null)fbAppId = window.fbAppId
                         } catch (e) {
                         }
+                        if(window.debug)console.log("cnv-fb-subscribe-form init fbId=",fbAppId)
                         if (fbAppId) {
 
                             if (window.fbAsyncInit == null) {
@@ -88,7 +89,9 @@ angular.module('cnvrtlyComponents')
                     }
 
                     var onFbInit=function(){
+                        if(window.debug)console.log("cnv-fb-subscribe-form onFbInit")
                         FB.getLoginStatus(function (response) {
+                            if(window.debug)console.log("cnv-fb-subscribe-form onFbInit FB response=",response)
                             if (response.status === 'connected') {
                                 var uid = response.authResponse.userID;
                                 var accessToken = response.authResponse.accessToken;
@@ -102,6 +105,9 @@ angular.module('cnvrtlyComponents')
                     }
 
                     scope.$on("event:directive:cnvFndModal:opened",function(){
+                        initFBForm();
+                    })
+                    scope.$on("event:directive:cnvFbSubscribeForm:init",function(){
                         initFBForm();
                     })
                 }

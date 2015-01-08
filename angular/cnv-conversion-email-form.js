@@ -8,6 +8,7 @@ angular.module('cnvrtlyComponents')
             restrict: 'A',
             template:'',
             link: function postLink(scope, element, attrs,formCtrl) {
+                var fnlSteps=[]
                 var CnvXData=window["CnvXData"]
 
                 scope.form=formCtrl
@@ -15,7 +16,7 @@ angular.module('cnvrtlyComponents')
                 element=$(element)
                 var newElementAdded=false
                 var emailField=element.find('input[name="email"]')
-                var fnlSteps=[]
+
 
 
                 if(emailField==null||emailField.length<1)emailField=element.find(".email")
@@ -50,6 +51,26 @@ angular.module('cnvrtlyComponents')
                     if(element.is("form"))formEl=element;
                 }
 
+                var updateFormFnlSteps=function(){
+                    var currFSEl=element.find('[name="_fnlSteps"]')
+                    if(currFSEl.length>0){
+                        addToFnlSteps(currFSEl.val().split(","),true)
+                        currFSEl.remove()
+                    }
+                    element.prepend('<input type="hidden" name="_fnlSteps" value="'+fnlSteps.toString()+'"/>')
+
+                }
+                var addToFnlSteps=function(fnlStepsArr,skipUpdateView){
+                    if (fnlSteps==null)fnlSteps=[]
+                    for (var i = 0; i < fnlStepsArr.length; i++) {
+                        var fStep = fnlStepsArr[i].trim();
+                        if(fnlSteps.indexOf(fStep)<0)fnlSteps.push(fStep)
+                    }
+                    if(!skipUpdateView)updateFormFnlSteps()
+                    return fnlSteps
+                }
+                fnlSteps=attrs.fnlSteps!=null&&attrs.fnlSteps.length>0?addToFnlSteps(attrs.fnlSteps.split(",")) : fnlSteps
+
                 var getPostURL=function(){
                     var baseTag=document.getElementById("baseTag")
                     var baseTagPath=baseTag?baseTag.href:null
@@ -66,21 +87,13 @@ angular.module('cnvrtlyComponents')
                     //console.log("postURL=",postURL)
                     return postURL
                 }
-                var addToFnlSteps=function(fnlStepsParam){
-                    for (var i = 0; i < fnlStepsParam.length; i++) {
-                        var fStep = fnlStepsParam[i];
-                        if(fnlSteps.indexOf(fStep)<0)fnlSteps.push(fStep)
-                    }
-                    updateFormFnlSteps()
-                }
-                var updateFormFnlSteps=function(){
-                    element.find('[name="_fnlSteps"]').remove()
-                    element.prepend('<input type="hidden" name="_fnlSteps" value="'+fnlSteps.toString()+'"/>')
 
-                }
+
                 scope.$on("event:directive:emailListIntegrationForm:fnlSteps",function(ev,fnlStepsParam){
                     addToFnlSteps(fnlStepsParam)
                 })
+
+
                 scope.submitForm=function(){
                     var emailAddr=emailField.val()
                     if(!scope.form.$valid){
@@ -93,30 +106,30 @@ angular.module('cnvrtlyComponents')
                     var params = {email: emailAddr,dataArr:[]};
 
                     function addValueToParams(keyName, elemValue, keyNames, dataArr) {
-                           if (keyName == null || keyName.length < 1)keyName = "no_title_1"
-                            while (keyNames[keyName] != null) {
-                                var keyNr = -1
-                                var keyNrDivider = keyName.lastIndexOf('_');
-                                var newKey = null
-                                if (keyNrDivider > 0) {
-                                    keyNr = keyName.substr(keyNrDivider + 1)
-                                    var nrParsed = parseInt(keyNr);
-                                    if (isNaN(nrParsed)) {
-                                        keyNr = 1
-                                    } else {
-                                        keyNr++
-                                    }
-                                    newKey = keyName.substr(0, keyNrDivider) + '_' + keyNr
+                        if (keyName == null || keyName.length < 1)keyName = "no_title_1"
+                        while (keyNames[keyName] != null) {
+                            var keyNr = -1
+                            var keyNrDivider = keyName.lastIndexOf('_');
+                            var newKey = null
+                            if (keyNrDivider > 0) {
+                                keyNr = keyName.substr(keyNrDivider + 1)
+                                var nrParsed = parseInt(keyNr);
+                                if (isNaN(nrParsed)) {
+                                    keyNr = 1
+                                } else {
+                                    keyNr++
                                 }
-                                if (keyNr < 1)keyNr = 1
-                                if (newKey == null)newKey = keyName + '_' + keyNr.toString()
-                                keyName = newKey
+                                newKey = keyName.substr(0, keyNrDivider) + '_' + keyNr
                             }
-                            if(elemValue==null)elemValue=''
-                            keyNames[keyName] = true
-                            var valObj={}
-                            valObj[keyName]=elemValue
-                            dataArr.push(valObj)
+                            if (keyNr < 1)keyNr = 1
+                            if (newKey == null)newKey = keyName + '_' + keyNr.toString()
+                            keyName = newKey
+                        }
+                        if(elemValue==null)elemValue=''
+                        keyNames[keyName] = true
+                        var valObj={}
+                        valObj[keyName]=elemValue
+                        dataArr.push(valObj)
                     }
                     var keyNames={}
                     var formElements=formEl.find("input, textarea, select")
@@ -144,14 +157,16 @@ angular.module('cnvrtlyComponents')
                     if(CnvXData && params.email!=null&& params.email.length>0){
                         CnvXData.setIdentity(params.email,function(){})
                     }
+                    console.log("params=",params)
                     $http.post(getPostURL(), params).success(function(res){
 
                         var confirm=function(){
                             if(res.success==true) {
-                                if(res.url==null || res.url.length<1){
-                                    $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:success",null)
+                                if(res.url==null || res.url.length<1 || attrs.cnvRedirect=="false"){
+                                    $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:success",null,params.email)
                                 }else{
-                                    $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:success",res.url)
+                                    $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:success",res.url,params.email)
+                                    res.url=(res.url.indexOf("?")>0)?res.url+"&email="+params.email:res.url+"?email="+params.email
                                     window.location.href=res.url
                                 }
                             }else{
