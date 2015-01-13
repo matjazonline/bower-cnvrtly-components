@@ -29,10 +29,10 @@ angular.module('cnvrtlyComponents')
 
                 if(CnvXData){
                     CnvXData.getIdentity(function(identVal){
-                        if(scope.emailField!=null && scope.emailField.val()!=null&& scope.emailField.val().length<1){
+                        if(identVal.indexOf("@")>0 && scope.emailField!=null && scope.emailField.val()!=null&& scope.emailField.val().length<1){
                             scope.emailField.val(identVal).change()
                         }
-                    })
+                    },null,true)
                 }
 
                 var submitBtn=element.find(".submit")
@@ -42,6 +42,7 @@ angular.module('cnvrtlyComponents')
                     element.append(submitBtn)
                     newElementAdded=true
                 }
+                submitBtn.css("cursor","pointer")
                 if(newElementAdded) CnvrtlyComponents.dispatchUpdatedEvent();
                 var formEl=element.find("form");
                 if(formEl.length<1){
@@ -80,7 +81,7 @@ angular.module('cnvrtlyComponents')
                         var portCol = baseDomain.indexOf(':');
                         if(portCol>0)baseDomain=baseDomain.substring(0,portCol)
                     }
-                    var prep=window.location.port=='9000'?window.location.protocol+'//'+window.location.hostname+":8080":window.location.origin
+                    var prep=window.location.port.length>0?window.location.protocol+'//'+window.location.hostname+":8080":window.location.origin
                     var pageId=CnvrtlyComponents.getPageId()
                     var postURL = prep + "/subscribe/" + pageId;
                     if(baseDomain.length>0)postURL=postURL+'?ns='+baseDomain
@@ -155,9 +156,9 @@ angular.module('cnvrtlyComponents')
                         }
                     }
                     if(CnvXData && params.email!=null&& params.email.length>0){
-                        CnvXData.setIdentity(params.email,function(){})
+                        CnvXData.setIdentity(params.email)
                     }
-                    console.log("params=",params)
+                    //console.log("params=",params)
                     $http.post(getPostURL(), params).success(function(res){
 
                         var confirm=function(){
