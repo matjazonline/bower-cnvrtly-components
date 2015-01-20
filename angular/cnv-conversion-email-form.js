@@ -29,7 +29,7 @@ angular.module('cnvrtlyComponents')
 
                 if(CnvXData){
                     CnvXData.getIdentity(function(identVal){
-                        if(identVal.indexOf("@")>0 && scope.emailField!=null && scope.emailField.val()!=null&& scope.emailField.val().length<1){
+                        if(identVal && identVal.indexOf("@")>0 && scope.emailField!=null && scope.emailField.val()!=null&& scope.emailField.val().length<1){
                             scope.emailField.val(identVal).change()
                         }
                     },null,true)

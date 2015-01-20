@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cnvrtlyComponents')
-  .directive('cnvGalleryItems', ['$window','$timeout', '$q',function ($window,$timeout, $q) {
+  .directive('cnvGalleryItems', ['$window','$timeout','$interval', '$q',function ($window,$timeout,$interval, $q) {
         return {
             restrict: 'A',
             compile: function compile(tElement, tAttrs, transclude) {
@@ -13,6 +13,7 @@ angular.module('cnvrtlyComponents')
                     var loadedPreviewImages=[]
                     var layoutResetWhenLoadedIndex=0
                     var isNewTick=true
+                    var waitOnVisibilityTmout=null
 
                     function areInSameRow($newSelectedElem, $otherGalleryElem) {
                         if(!$otherGalleryElem || !$newSelectedElem)return false
@@ -115,17 +116,32 @@ angular.module('cnvrtlyComponents')
                             layoutResetWhenLoadedIndex=loadedPreviewImages.length
                             if(isNewTick) {
                                 isNewTick=false
-                                setTimeout(function () {
+                                $timeout(function () {
                                     isNewTick=true
-                                    //console.log("sssssss")
-                                    resetGalleryClasses()
-                                }, 0)
+                                    resetGalleryClasses(true)
+                                }, 10)
                             }
 
                         }
                     }
 
+                    var clearVisibilityTimeout=function(){
+                        if($(document.body).is(":visible")==true){
+                            $interval.cancel(waitOnVisibilityTmout)
+                            resetGalleryClasses()
+                        }
+                    }
+                    var setVisibilityTimeout=function(){
+                        if(waitOnVisibilityTmout==null) {
+                            waitOnVisibilityTmout=$interval(clearVisibilityTimeout,100)
+                        }
+                    }
+
                     var resetGalleryClasses=function(){
+                        if($(document.body).is(":visible")==false){
+                            setVisibilityTimeout()
+                            return
+                        }
                         //console.log("RESET GALLERY called")
                         var getTopPos=function(currItem,currIndex,itemsTopArr){
                             if(itemsTopArr[currIndex]==null){
@@ -142,6 +158,7 @@ angular.module('cnvrtlyComponents')
                             var rowIndStart=0
                             var rowIndEnd=0
                             for (var j = 0; j < ch.length; j++) {
+
                                 var $obj = $(ch[j]);
                                 if($obj.is("[cnv-expanded-w]"))continue
                                 $obj.removeClass("end").removeClass("cnv-last-in-row").removeClass("cnv-not-last-in-row").removeClass("cnv-not-first-in-row").css("height", "auto")
@@ -211,14 +228,13 @@ angular.module('cnvrtlyComponents')
                     $($window).resize(function(){
                         resetGalleryClasses()
                     })
+
                     resetGalleryClasses()
                     //wait for layout to complete
                     /*$timeout(function(){
                         resetGalleryClasses()
                     },200)*/
-                    $($window).load(function(){
-                        resetGalleryClasses()
-                    })
+
                     if($("#cnv-gallery-items-style").length<1) {
                         $('head').prepend('<style id="cnv-gallery-items-style">.cnv-expanded-preview {\
                     position: relative;\
