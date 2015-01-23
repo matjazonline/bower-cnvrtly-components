@@ -62,16 +62,18 @@
         return false;
     }
 
-    var loadScripts=function(loadAsync,skipJQ,skipNG){
+    var loadScripts=function(loadAsync,skipJQ,skipNG,loadCnvXScript){
         if(loadAsync==null)loadAsync=true
 
 
         if(loadAsync){
             console.log("loading Asynchronous")
             var l=new Loader();
-            l.require(['//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'
-                ,'//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js'
-            ],function(){
+            var scripts=[]
+            if(!skipJQ)scripts.push('//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+            if(!skipJQ)scripts.push('//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js')
+            if(loadCnvXScript)scripts.push( '//cnvrtly.appspot.com/cnvXScript.js')
+            l.require(scripts,function(){
                 //console.log("JQ&NG LOADED INITING APP path="+window._cnv_init_script_path)
                 //initApp(angular)
                 initApp()
@@ -93,7 +95,7 @@
             var ieVer=detectIE()
 
             var loadScript=function(ieVer,url) {
-                if (ieVer != false && ieVer < 10 && window._cnv_ie_message)alert(window._cnv_ie_message)
+                if (ieVer != false && ieVer < 10 && window.cnvIEMessage)alert(window.cnvIEMessage)
                 var xhrObj = new XMLHttpRequest();
                 if (ieVer != false && ieVer < 10)xhrObj = new XDomainRequest()
                 xhrObj.open('GET', url, false);
@@ -107,8 +109,11 @@
             if(!skipJQ) {
                 loadScript(ieVer,"//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js");
             }
-             if(!skipNG){
-                 loadScript(ieVer,"//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js");
+             if(!skipNG) {
+                 loadScript(ieVer, "//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js");
+             }
+             if(loadCnvXScript){
+                 loadScript(ieVer,"//cnvrtly.appspot.com/cnvXScript.js");
         }
 
 
@@ -161,12 +166,12 @@
     }
     //console.log("TEMPLATE INIT START app.js isDev=",isDevMode())
     if(!isTaglyCmsEditMode() && !isDevMode()){
-        loadScripts(window._cnv_init_async)
+        loadScripts(window.cnvInitAsync,false,false,window.cnvXScriptLoad)
         //console.log("TEMPLATE APP INITEDDD isEdit=",isTaglyCmsEditMode())
     }else if(isDevMode()){
         console.log("DEV MODE TEMPLATE")
-        initApp(angular)
+        initApp()
     }else if(isTaglyCmsEditMode()){
-        loadScripts(false,true,true)
+        loadScripts(false,true,true,false)
     }
 }(document,window));

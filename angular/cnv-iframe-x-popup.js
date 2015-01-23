@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('cnvrtlyComponents')
-    .directive('cnvIframePopup',['$rootScope', function ($rootScope) {
+  .directive('cnvIframeXPopup',['$rootScope', function ($rootScope) {
 
-        //console.log("iframe popup init")
-        window.parent.postMessage({id:'cnvIframePopup',event:'init'}, '*');
+        //console.log("iframe Xpopup init")
+        window.parent.postMessage({id:'cnvIframeXPopup',event:'init'}, '*');
         return {
             //template: '<div></div>',
             restrict: 'A',
@@ -13,28 +13,41 @@ angular.module('cnvrtlyComponents')
 
                 return function postLink(scope, element, attrs) {
 
-                    var closeIframePopup=function(){
-                        window.parent.postMessage({id:'cnvIframePopup',event:'close'}, '*');
+                    var $ppElementArea=$("[cnv-x-popup-area]")[0]
+                    $ppElementArea=$ppElementArea?$($ppElementArea):$(element)
+                    var closeIframeXPopup=function(){
+                        window.parent.postMessage({id:'cnvIframeXPopup',event:'close'}, '*');
                     }
-                    var successIframePopup=function(redirectUrl,email){
-                        window.parent.postMessage({id:'cnvIframePopup',event:'success',url:redirectUrl,email:email}, '*');
+                    var successIframeXPopup=function(redirectUrl,email){
+                        window.parent.postMessage({id:'cnvIframeXPopup',event:'success',url:redirectUrl,email:email}, '*');
                     }
+
+                    function close() {
+                        if (window !== top) {
+                            closeIframeXPopup()
+                        } else {
+                            window.history.back()
+                        }
+                    }
+
                     $('[cnv-close]',element).click(function(ev){
                         ev.preventDefault()
-                        if(window !== top){
-                            closeIframePopup()
-                        }else{
-                            window.history.back()
+                        close();
+                    })
+                    $(document).click(function(ev){
+                        ev.preventDefault()
+                        if($ppElementArea.has(ev.target).length<1){
+                            close();
                         }
                     })
 
 
-                    var onIframePopupParent=function(data){
-                        if(data.id!=null && data.id=="cnvIframePopup") {
+                    var onIframeXPopupParent=function(data){
+                        if(data.id!=null && data.id=="cnvIframeXPopup") {
                             switch (data.event) {
                                 case "updateView":
-                                    if(data.scroll)element.animate({top:data.scroll})
-                                    if(data.height)$(document).height(data.height)
+                                    if(data.scroll!=null)element.animate({top:data.scroll})
+                                    if(data.height!=null)$(document).height(data.height)
                                     $rootScope.$broadcast("event:directive:cnvFbSubscribeForm:init")
                                     break;
                                 case "fnlSteps":
@@ -53,10 +66,10 @@ angular.module('cnvrtlyComponents')
                         var key = e.message ? "message" : "data";
                         var data = e[key];
                         //run function//
-                        onIframePopupParent(data)
+                        onIframeXPopupParent(data)
                     },false);
                     $rootScope.$on("event:directive:emailListIntegrationForm:subscribe:success",function(ev,redirectUrl,email){
-                        successIframePopup(redirectUrl,email)
+                        successIframeXPopup(redirectUrl,email)
                     })
                 }
 

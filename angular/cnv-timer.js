@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cnvrtlyComponents')
-  .directive('cnvTimer',["$interval", function ($interval) {
+  .directive('cnvTimer',["$interval","CnvrtlyComponents", function ($interval,CnvrtlyComponents) {
         return {
             template: '<div ng-show="countdownTimeLeft!=null">' +
                 '<ul>\
@@ -78,8 +78,9 @@ angular.module('cnvrtlyComponents')
                     dateToExpire.setDate(dateToExpire.getDate() + days)
                     return getTimeLeft(now.getTime(),dateToExpire.getTime())
                 }
-                var CnvXData=window.CnvXData
-                var CnvUrl=window.CnvUrl
+                var CnvXData=null
+                var CnvXScript=null
+                var CnvXUtils=null
                 scope.countdownTimeLeft=null//{ d: 0, h: 0, m: 0, s: 0 }
                 scope.$watch("countdownTimeLeft",function(val){
                     if(val) {
@@ -159,7 +160,7 @@ angular.module('cnvrtlyComponents')
                 }
 
                 var getNs=function(){
-                    var ns = CnvUrl?CnvUrl.getQueryParams().ns:null
+                    var ns = CnvXUtils?CnvXUtils.getQueryParams().ns:null
                     if(!ns)ns=attrs.cnvDomain
                     if(!ns)ns=attrs.cnvNs
                     if(!ns)ns=window.cnvNs
@@ -186,13 +187,13 @@ angular.module('cnvrtlyComponents')
                     if(daysVal>0){
                         callbackFn(daysVal)
                     }else if(isNaN( daysVal) ){
-                        if(!CnvUrl){
-                            //console.log("TTTTTT no CnvUrl")
+                        if(!CnvXScript){
+                            //console.log("TTTTTT no CnvXScript")
                             callbackFn(null)
                             return
                         }
                         //console.log("TTTTTT getValueOrTagValue getTag call t=",valOrTagName,getNs())
-                        CnvUrl.getTag(valOrTagName+"@"+ getNs(),function(tagVal){
+                        CnvXScript.getTag(valOrTagName+"@"+ getNs(),function(tagVal){
                             //console.log("TTTTTT  getTAGGG res=",tagVal)
                             if(tagVal){
                                 callbackFn(parseInt(tagVal[tagPropName]))
@@ -205,7 +206,7 @@ angular.module('cnvrtlyComponents')
                 }
 
                 var init=function(){
-                    if(scope.cnvStartOn!=null  && cnvTimerStop>0&&CnvXData && CnvUrl&& scope.cnvStop!=null&& (scope.cnvStop.length>0 || scope.cnvStop>0)){
+                    if(scope.cnvStartOn!=null  && cnvTimerStop>0&&CnvXData && CnvXScript&& scope.cnvStop!=null&& (scope.cnvStop.length>0 || scope.cnvStop>0)){
                         var tagName=scope.cnvStartOn
                         getValueOrTagValue(tagName,'createdAt',function(res){
                         if(res){
@@ -217,25 +218,25 @@ angular.module('cnvrtlyComponents')
                     }
                 }
 
-                $(document).on("cnvXScript",function(ev){
-                    //console.log("TTTT cnvXScript called")
-                    if(!CnvUrl || !CnvXData){
-                        CnvUrl=window.CnvUrl
-                        CnvXData=window.CnvXData
-                        scope.$apply(function(){
+                CnvrtlyComponents.onCnvXScript(function(xScript){
+                    CnvXData=xScript.CnvXData
+                    CnvXScript=xScript.CnvXScript
+                    CnvXUtils=xScript.CnvXUtils
+
+
                             //call to set end time from tag name - it calls init()
 
                             //console.log("TTTT cnvXScript called -------- end time",scope.cnvStop)
                             setCdwnEndTime(scope.cnvStop)
-                        })
-                    }
-                })
+
+
+                },scope)
+
 
                 var onTimerHandler = function (ev, start, end) {
-
                     if (!scope.cnvStartOn && start) {
                         scope.$apply(function () {
-                            if (end)scope.cnvStop = end
+                            if (end!=null)scope.cnvStop = end
                             scope.cnvStartOn = start
                         })
                     }

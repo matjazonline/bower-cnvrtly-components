@@ -9,7 +9,6 @@ angular.module('cnvrtlyComponents')
             template:'',
             link: function postLink(scope, element, attrs,formCtrl) {
                 var fnlSteps=[]
-                var CnvXData=window["CnvXData"]
 
                 scope.form=formCtrl
                 scope.submitCalled=false
@@ -17,6 +16,7 @@ angular.module('cnvrtlyComponents')
                 var newElementAdded=false
                 var emailField=element.find('input[name="email"]')
 
+                var CnvXData=null
 
 
                 if(emailField==null||emailField.length<1)emailField=element.find(".email")
@@ -27,13 +27,17 @@ angular.module('cnvrtlyComponents')
                 }
                 if(emailField)scope.emailField=emailField
 
-                if(CnvXData){
-                    CnvXData.getIdentity(function(identVal){
-                        if(identVal && identVal.indexOf("@")>0 && scope.emailField!=null && scope.emailField.val()!=null&& scope.emailField.val().length<1){
-                            scope.emailField.val(identVal).change()
-                        }
-                    },null,true)
-                }
+
+                CnvrtlyComponents.onCnvXScript(function(xScript){
+                    CnvXData=xScript.CnvXData
+                    if(CnvXData){
+                        CnvXData.getIdentity(function(identVal){
+                            if(identVal && identVal.indexOf("@")>0 && scope.emailField!=null && scope.emailField.val()!=null&& scope.emailField.val().length<1){
+                                scope.emailField.val(identVal).change()
+                            }
+                        },null,true)
+                    }
+                },scope)
 
                 var submitBtn=element.find(".submit")
                 if(submitBtn.length<1)submitBtn=element.find("a.submit")
@@ -167,7 +171,7 @@ angular.module('cnvrtlyComponents')
                                     $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:success",null,params.email)
                                 }else{
                                     $rootScope.$broadcast("event:directive:emailListIntegrationForm:subscribe:success",res.url,params.email)
-                                    res.url=(res.url.indexOf("?")>0)?res.url+"&email="+params.email:res.url+"?email="+params.email
+                                    //res.url=(res.url.indexOf("?")>0)?res.url+"&email="+params.email:res.url+"?email="+params.email
                                     window.location.href=res.url
                                 }
                             }else{
