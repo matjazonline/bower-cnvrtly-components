@@ -32,7 +32,7 @@
         if(ngAppElem.length>1)alert("Multiple ng-app definitions in html!")
         var htmlElem=document.querySelector("html")
         if(htmlElem!=null && htmlElem!=null && htmlElem.classList != null && htmlElem.classList.contains!=null) {
-        //if(ngAppElem!=null && ngAppElem[0]!=null && ngAppElem[0].classList != null && ngAppElem[0].classList.contains!=null) {
+            //if(ngAppElem!=null && ngAppElem[0]!=null && ngAppElem[0].classList != null && ngAppElem[0].classList.contains!=null) {
             return htmlElem.classList.contains("tagy-cms-edit-mode")
         }else{
             return false
@@ -65,14 +65,14 @@
     var loadScripts=function(loadAsync,skipJQ,skipNG,loadCnvXScript){
         if(loadAsync==null)loadAsync=true
 
-
+        var xScrUrl=window.location.port.length>2?'//localhost:8080/cnvXScript.js':'//cnvrtly.appspot.com/cnvXScript.js'
         if(loadAsync){
             console.log("loading Asynchronous")
             var l=new Loader();
             var scripts=[]
             if(!skipJQ)scripts.push('//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
             if(!skipJQ)scripts.push('//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js')
-            if(loadCnvXScript)scripts.push( '//cnvrtly.appspot.com/cnvXScript.js')
+            if(loadCnvXScript)scripts.push( xScrUrl)
             l.require(scripts,function(){
                 //console.log("JQ&NG LOADED INITING APP path="+window._cnv_init_script_path)
                 //initApp(angular)
@@ -109,12 +109,12 @@
             if(!skipJQ) {
                 loadScript(ieVer,"//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js");
             }
-             if(!skipNG) {
-                 loadScript(ieVer, "//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js");
-             }
-             if(loadCnvXScript){
-                 loadScript(ieVer,"//cnvrtly.appspot.com/cnvXScript.js");
-        }
+            if(!skipNG) {
+                loadScript(ieVer, "//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js");
+            }
+            if(loadCnvXScript){
+                loadScript(ieVer,xScrUrl);
+            }
 
 
             var se3 = null

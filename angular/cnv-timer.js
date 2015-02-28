@@ -103,7 +103,7 @@ angular.module('cnvrtlyComponents')
                 var cnvTimerStop=0
 
                 var setCdwnEndTime=function(val){
-                    if(val!=null && val>0) {
+                    if(val!=null && (val>0 || val.length>0)) {
                         //var daysVal=parseInt(val)
                         getValueOrTagValue(val,'value',function(res){
 
@@ -192,9 +192,9 @@ angular.module('cnvrtlyComponents')
                             callbackFn(null)
                             return
                         }
-                        //console.log("TTTTTT getValueOrTagValue getTag call t=",valOrTagName,getNs())
+                        if(CnvXUtils&&CnvXUtils.getQueryParams().debug)console.log("TTTTTT getValueOrTagValue getTag call t=",valOrTagName,getNs())
                         CnvXScript.getTag(valOrTagName+"@"+ getNs(),function(tagVal){
-                            //console.log("TTTTTT  getTAGGG res=",tagVal)
+                            if(CnvXUtils&&CnvXUtils.getQueryParams().debug)console.log("TTTTTT  getTAGGG res=",tagVal)
                             if(tagVal){
                                 callbackFn(parseInt(tagVal[tagPropName]))
                             }else{
@@ -209,6 +209,7 @@ angular.module('cnvrtlyComponents')
                     if(scope.cnvStartOn!=null  && cnvTimerStop>0&&CnvXData && CnvXScript&& scope.cnvStop!=null&& (scope.cnvStop.length>0 || scope.cnvStop>0)){
                         var tagName=scope.cnvStartOn
                         getValueOrTagValue(tagName,'createdAt',function(res){
+                            if(CnvXUtils&&CnvXUtils.getQueryParams().debug)console.log("cnvTimer startCountdown =",res)
                         if(res){
                             startCountdown(res)
                         }
@@ -227,6 +228,7 @@ angular.module('cnvrtlyComponents')
                             //call to set end time from tag name - it calls init()
 
                             //console.log("TTTT cnvXScript called -------- end time",scope.cnvStop)
+                    if(CnvXUtils&&CnvXUtils.getQueryParams().debug)console.log("cnvTimar onCnvXScript setting end time=",scope.cnvStop)
                             setCdwnEndTime(scope.cnvStop)
 
 
@@ -234,7 +236,9 @@ angular.module('cnvrtlyComponents')
 
 
                 var onTimerHandler = function (ev, start, end) {
+                    if(CnvXUtils&&CnvXUtils.getQueryParams().debug)console.log("cnvTimer onTimerHandler event")
                     if (!scope.cnvStartOn && start) {
+                        if(CnvXUtils&&CnvXUtils.getQueryParams().debug)console.log("on cnvTimer event - call init =",start)
                         scope.$apply(function () {
                             if (end!=null)scope.cnvStop = end
                             scope.cnvStartOn = start
