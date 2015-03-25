@@ -1,6 +1,7 @@
 'use strict';
 (function(document,window) {
     window.cnvUseNgComponents=false
+    window.TagyCmsClient={}
     var Loader = function () { }
     Loader.prototype = {
         require: function (scripts, callback,async) {
@@ -28,7 +29,7 @@
             head.appendChild(s);
         }
     }
-    var isTaglyCmsEditMode=function(){
+    window.TagyCmsClient.isEditMode=function(){
         var ngAppElem = document.querySelectorAll('[ng-app]');
         if(ngAppElem.length>1)alert("Multiple ng-app definitions in html!")
         var htmlElem=document.querySelector("html")
@@ -95,14 +96,14 @@
 
             var se3 = null
 
-            if(isTaglyCmsEditMode()){//&& window.top!==window) {
+            if(window.TagyCmsClient.isEditMode()){//&& window.top!==window) {
                 var parser = document.createElement('a');
                 parser.href = window._cnv_init_script_path
                 window._cnv_init_script_path='//'+window.top.location.host+parser.pathname+'?ns='+parser.hostname
             }
                 se3=loadScript(window._cnv_init_script_path,false)
                 initApp()
-            /*if(!isTaglyCmsEditMode()){
+            /*if(!window.TagyCmsClient.isEditMode()){
                 se3=loadScript(window._cnv_init_script_path,false)
                 initApp()
             }else{
@@ -143,7 +144,7 @@
         var cnvComp = 'cnvrtlyComponents';
         var ccArr=[]
         if(window.cnvUseNgComponents)ccArr.push(cnvComp)
-        if(!isTaglyCmsEditMode()){
+        if(!window.TagyCmsClient.isEditMode()){
             if(window.angular){
                 if($("html").attr("ng-app")==null) {
                     angular.element(document).ready(function() {
@@ -178,11 +179,11 @@
         return window._isDevEnvironment==true
     }
     //console.log("TEMPLATE INIT START app.js isDev=",isDevMode())
-    if(!isTaglyCmsEditMode() && !isDevMode()){
+    if(!window.TagyCmsClient.isEditMode() && !isDevMode()){
         loadScripts(window.cnvInitAsync,false,!window.cnvUseNgComponents,window.cnvXScriptLoad)
     }else if(isDevMode()){
         initApp()
-    }else if(isTaglyCmsEditMode()){
+    }else if(window.TagyCmsClient.isEditMode()){
         loadScripts(false,true,true,true)
     }
 }(document,window));
