@@ -16,7 +16,7 @@
     // Create the defaults once
     var pluginName = "cnvEuCookie",
         defaults = {
-            propertyName: "value"
+            //propertyName: "value"
         };
 
     // The actual plugin constructor
@@ -41,11 +41,14 @@
             // and this.settings
             // you can add more functions like the one below and
             // call them like so: this.yourOtherFunction(this.element, this.settings).
-            console.log("xD");
-
             var self = this;
 
             this.hide(true)
+
+            $('.cnv-eu-cookie-msg-hide-btn',this.element).click(function(ev){
+                ev.preventDefault()
+                self.hide(false)
+            })
 
             $.ajax({
                 ///type: "HEAD",
@@ -87,9 +90,6 @@
                     $(element).show()
                 }
             })*/
-        },
-        yourOtherFunction: function () {
-            // some logic
         }
 
         ,
@@ -137,6 +137,6 @@
     };
 
     $(function(){
-        $('.cnv-Eu-Cookie').cnvEuCookie()
+        $('.cnv-eu-cookie-msg').cnvEuCookie()
     })
 })( jQuery, window, document );
