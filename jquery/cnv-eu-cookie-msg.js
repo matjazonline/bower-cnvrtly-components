@@ -41,14 +41,11 @@
             // and this.settings
             // you can add more functions like the one below and
             // call them like so: this.yourOtherFunction(this.element, this.settings).
+
+            if(!this)return
             var self = this;
 
             this.hide(true)
-
-            $('.cnv-eu-cookie-msg-hide-btn',this.element).click(function(ev){
-                ev.preventDefault()
-                self.hide(false)
-            })
 
             $.ajax({
                 ///type: "HEAD",
@@ -68,7 +65,7 @@
                 },
                 statusCode: {
                     410: function() {
-                        self.hide(true)
+                        if(self)self.hide(true)
                     },
                     404: function() {
                     }
@@ -90,9 +87,7 @@
                     $(element).show()
                 }
             })*/
-        }
-
-        ,
+        },
         getPostURL:function(hideMessage){
             var baseTag=document.getElementById("baseTag")
             var baseTagPath=baseTag?baseTag.href:null
@@ -137,6 +132,6 @@
     };
 
     $(function(){
-        $('.cnv-eu-cookie-msg').cnvEuCookie()
+        $('.cnv-Eu-Cookie').cnvEuCookie()
     })
 })( jQuery, window, document );

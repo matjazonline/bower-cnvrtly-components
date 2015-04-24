@@ -1,0 +1,72 @@
+$time-date-month-background-color:red !default;
+.time-date-holder {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 10px;
+  text-align: center;
+  .time-w {
+    display: inline-block;
+    font-size: 4em;
+    border: 2px solid #ccc;
+    padding: 5px;
+    margin-right: -15px;
+    padding-right: 15px;
+    border-radius: 4px;
+  }
+  .date-w {
+    text-align: center;
+    display: inline-block;
+  }
+}
+
+.time-hours {
+  display: block;
+  font-size: 0.8em;
+}
+
+.date-header {
+  background-color: $time-date-month-background-color;
+  color: #FFF;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  padding: 15px 25px;
+  font-size: 1.5em;
+  margin-top: 12px;
+}
+
+.date-body {
+  padding: 7px 20px 20px;
+  font-size: 3em;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  background: #fcfcfc;
+  background: linear-gradient(top, #fcfcfc 0%, #dad8d8 100%);
+  background: -moz-linear-gradient(top, #fcfcfc 0%, #dad8d8 100%);
+  background: -webkit-linear-gradient(top, #fcfcfc 0%, #dad8d8 100%);
+  border: 1px solid #d2d2d2;
+  sup {
+    font-size: 0.5em;
+  }
+}
+
+.date-day {
+  font-size: 0.4em;
+  display: block;
+}
+
+.location-w {
+  display: inline-block;
+  margin: 12px 0;
+}
+.location-icon {
+  float: left;
+  margin-right: 10px;
+  font-size: 4em;
+  margin-left: 12px;
+}
+.location-body-w{
+  overflow: hidden;
+}
+.location-body {
+  font-size: 2em;
+}
+

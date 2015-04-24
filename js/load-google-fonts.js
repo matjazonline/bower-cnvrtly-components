@@ -9,6 +9,7 @@ window.CnvFonts=(function(doc ) {
                 js.href = url;
                 js.type="text/css";
                 js.rel="stylesheet";
+                js['remove-in-production']="true";
                 /*}else{
                 js.src=url;
                 js.async="true";
