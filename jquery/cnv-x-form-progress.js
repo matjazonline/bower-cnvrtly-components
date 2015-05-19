@@ -78,6 +78,7 @@
         },
 
         onError:function(){
+            var $el=$(this.element)
             if($el.hasClass('cnv-x-form-progress-show')||$el.hasClass('cnv-x-form-progress')){
 
                 $el.hide()

@@ -44,6 +44,7 @@
         if(loadAsync==null)loadAsync=true
 
         var xScrUrl=window.location.port.length>2?'//localhost:8080/cnvXScript.js':'//cnvrtly.appspot.com/cnvXScript.js'
+        if(window.cnvXScriptDebug)xScrUrl=xScrUrl+'?d=true'
         if(loadAsync){
             console.log("loading Asynchronous")
             var l=new Loader();
