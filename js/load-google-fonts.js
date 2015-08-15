@@ -22,7 +22,7 @@ window.CnvFonts=(function(doc ) {
             if(cssElementSelector=="text"){
                 cssElementSelector='body,p,.paragraph-font,ul,ol,dl'
             }else if(cssElementSelector=="title"){
-                cssElementSelector='h1, h2, h3, h4, h5, h6'
+                cssElementSelector='h1, h2, h3, h4, h5, h6,.title-font'
             }
             if(!cssProps)cssProps=''
             var css=cssElementSelector+'{font-family: "'+cssFontTitle+'",sans;'+cssProps+'}'
