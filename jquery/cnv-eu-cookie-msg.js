@@ -46,19 +46,16 @@
             var self = this;
 
             this.hide(true)
-
+            $('.cnv-eu-cookie-hide-btn',this.element).click(function(ev){
+                ev.preventDefault();
+                self.hide();
+            })
             $.ajax({
                 ///type: "HEAD",
                 async: true,
                 url:this.getPostURL(),
                 success:function(){
                     $(element).show()
-                    /*if(status==410) {
-                        this.hide(true)
-                    }else{
-                        //leave message
-                        $(element).show()
-                    }*/
                 },
                 error:function(){
                     $(self.element).show()
@@ -71,22 +68,6 @@
                     }
                 }
             })
-
-            /*$http.get(getPostURL()).success(function(data, status, headers){
-                if(status==410) {
-                    scope.hide(true)
-                }else{
-                    //leave message
-                    $(element).show()
-                }
-            }).error(function(data, status, headers){
-                if(status==410) {
-                    scope.hide(true)
-                }else{
-                    //leave message
-                    $(element).show()
-                }
-            })*/
         },
         getPostURL:function(hideMessage){
             var baseTag=document.getElementById("baseTag")
@@ -97,7 +78,7 @@
                 var portCol = baseDomain.indexOf(':');
                 if(portCol>0)baseDomain=baseDomain.substring(0,portCol)
             }
-            var prep=window.location.port=='9000'?window.location.protocol+'//'+window.location.hostname+":8080":window.location.origin
+            var prep = window.location.port == '9000' ? window.location.protocol + '//' + window.location.hostname + ":8080" : window.location.origin;
             var postURL = prep+"/api/v1/showEuCookieMsg";
             if(baseDomain.length>0){
                 postURL=postURL+'?ns='+baseDomain
@@ -132,6 +113,6 @@
     };
 
     $(function(){
-        $('.cnv-Eu-Cookie').cnvEuCookie()
+        $('.cnv-eu-cookie').cnvEuCookie()
     })
 })( jQuery, window, document );
