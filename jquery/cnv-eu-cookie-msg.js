@@ -46,9 +46,11 @@
             var self = this;
 
             this.hide(true)
-            $('.cnv-eu-cookie-hide-btn',this.element).click(function(ev){
-                ev.preventDefault();
-                self.hide();
+            $(this.element).click(function(ev){
+                if(!$(ev.target).attr("href")){
+                    ev.preventDefault();
+                    self.hide();
+                }
             })
             $.ajax({
                 ///type: "HEAD",
