@@ -42,6 +42,10 @@
             // you can add more functions like the one below and
             // call them like so: this.yourOtherFunction(this.element, this.settings).
 
+            if(!$("#cnvEuCookieMsgStyle").length) {
+                $(document.head).prepend("<style id='cnvEuCookieMsgStyle' remove-in-production> .cnv-eu-cookie { background-color: #E6E1E1; text-align: right; color: #535284; text-align: right; padding: 3px 0px 0px 3px; overflow: hidden; margin:0px; } a.cnv-eu-cookie-hide-btn{ border: #fff 2px solid; background: #B5BB59; color: #ffffff !important; padding: 0px 3px 1px 4px; font-size: 2em; text-decoration: none; border-radius: 5px; margin: 3px; display: inline-block; line-height: 0.8em; font-family: sans-serif; } a.about-cookies{ color: #535284; }</style>")
+            }
+
             if(!this)return
             var self = this;
 
