@@ -61,7 +61,7 @@
                 async: true,
                 url:this.getPostURL(),
                 success:function(){
-                    $(element).show()
+                    $(self.element).show()
                 },
                 error:function(){
                     $(self.element).show()
